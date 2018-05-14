@@ -73,8 +73,6 @@ npm run build
 * The **crowdsale** has the following properties
   * Ability to specify **min** & **max** contributions per address (accumulative)
   * Ability to specify **softcap** and **hardcap** in ether
-  * Different **exchange rates** for private, pre and normal ICO rounds
-    * Each round is defined by a start & end date
   * Ability to define a **open and close date** for the full ICO - tokens cannot be bough until the ICO opens
   * Ability to **withdraw** funds only once the soft cap is reached
     * Token participants can refund payments if the ICO is closed and has not reached its softcap
