@@ -17,7 +17,7 @@ const should = require('chai')
 const ConfigurableCrowdsale = artifacts.require('ConfigurableCrowdsale');
 const ConfigurableToken = artifacts.require('ConfigurableToken');
 
-contract('ConfigurableCrowdsale', function ([owner, investor, wallet, purchaser, authorized, unauthorized, anotherAuthorized]) {
+contract.skip('ConfigurableCrowdsale', function ([owner, investor, wallet, purchaser, authorized, unauthorized, anotherAuthorized]) {
 
   before(async function () {
     // Advance to the next block to correctly read time in the solidity "now" function interpreted by testrpc

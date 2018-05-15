@@ -20,15 +20,11 @@ contract INXCrowdsale is Crowdsale, Pausable {
 
   uint256 public closingTime = openingTime.add(31 days);
 
-  uint256 public goal = 14000 ether;
-
-  uint256 public cap = 50000 ether;
+  uint256 public goal = 10000 ether;
 
   uint256 public min = 0.2 ether;
 
-  uint256 public max = 10000 ether;
-
-  uint256 public icoRate = 1000 ether;
+  uint256 public max = 1000 ether;
 
   // refund vault used to hold funds while crowdsale is running
   RefundVault public vault;
@@ -124,14 +120,6 @@ contract INXCrowdsale is Crowdsale, Pausable {
   }
 
   /**
-   * @dev Checks whether the cap has been reached.
-   * @return Whether the cap was reached
-   */
-  function capReached() public view returns (bool) {
-    return weiRaised >= cap;
-  }
-
-  /**
    * @dev Checks whether the period in which the crowdsale is open has already elapsed.
    * @return Whether crowdsale period has elapsed
    */
@@ -164,8 +152,6 @@ contract INXCrowdsale is Crowdsale, Pausable {
     super._preValidatePurchase(_beneficiary, _weiAmount);
 
     require(now >= openingTime && now <= closingTime);
-
-    require(weiRaised.add(_weiAmount) <= cap);
 
     require(_weiAmount >= min);
 

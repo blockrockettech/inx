@@ -3,7 +3,7 @@ const assertRevert = require('../../helpers/assertRevert');
 
 const ConfigurableToken = artifacts.require('ConfigurableToken');
 
-contract('ConfigurableToken', function ([_, owner, recipient, anotherAccount]) {
+contract.skip('ConfigurableToken', function ([_, owner, recipient, anotherAccount]) {
   const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
   const TOTAl_AMOUNT_OF_TOKENS = 10000000000;
   const DECIMALS = 0;
