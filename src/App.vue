@@ -6,7 +6,7 @@
         <nav>
           <ul class="nav float-right">
             <li class="nav-item" v-if="isOwner">
-              <b-badge  pill variant="success">OWNER</b-badge>
+              <b-badge  pill variant="success">owner</b-badge>
             </li>
             <li class="nav-item">
               <router-link :to="{ name: 'dashboard' }" class="nav-link">Home</router-link>
@@ -26,7 +26,7 @@
           </ul>
         </nav>
 
-        <h3 class="text-muted">{{ tokenName }} TGE</h3>
+        <h3 class="text-muted">Investx</h3>
       </div>
 
       <router-view></router-view>

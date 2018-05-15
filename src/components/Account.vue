@@ -12,12 +12,12 @@
 
         <div class="col-lg-4">
           <h4>Token Balance</h4>
-          <p>{{ tokenBalance }} {{ tokenSymbol }}</p>
+          <p>{{ tokenBalance.toString(10) }} {{ tokenSymbol }}</p>
         </div>
 
         <div class="col-lg-4">
           <h4>Contribution Total</h4>
-          <p>{{ contributions }} <eth-symbol></eth-symbol></p>
+          <p>{{ contributions.toString(10) }} <eth-symbol></eth-symbol></p>
         </div>
       </div>
 
@@ -42,8 +42,8 @@
           <icon name="exclamation-triangle"></icon> Only the owner can pause the contract!
 
           <span class="pl-4">
-            <b-button variant="primary" v-if="!paused" @click="PAUSE_CONTRACT(1)">Pause <icon name="pause"></icon></b-button>
-            <b-button variant="primary" v-if="paused" @click="UNPAUSE_CONTRACT(25)">Unpause <icon name="play"></icon></b-button>
+            <b-button variant="primary" v-if="!paused" @click="PAUSE_CONTRACT()">Pause <icon name="pause"></icon></b-button>
+            <b-button variant="primary" v-if="paused" @click="UNPAUSE_CONTRACT()">Unpause <icon name="play"></icon></b-button>
           </span>
         </div>
       </div>

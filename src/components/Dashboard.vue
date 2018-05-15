@@ -1,7 +1,7 @@
 <template>
   <div id="dashboard">
 
-    <b-jumbotron header="Token Generation Event" lead="Building Internet 3.0">
+    <b-jumbotron :header="tokenSymbol" lead="Welcome to the creation of a truly disruptive equity crowdfunding platform">
       <div class="row">
         <div class="col-lg-6">
           <h4>Owner</h4>
@@ -14,10 +14,8 @@
           </div>
         </div>
       </div>
-
-      <h2 class="text-muted">{{ icoState }}</h2>
-
-      <p class="float-right"><strong>{{ raised }}</strong>
+      
+      <p class="float-right"><strong>{{ raised.toString(10) }}</strong>
         <eth-symbol></eth-symbol>
       </p>
 
@@ -31,72 +29,35 @@
       <div class="col-lg-5">
         <h4>Rate</h4>
         <p>
-          {{ rate }}
+          {{ rate.toString(10) }}
           <eth-symbol></eth-symbol>
           per {{ tokenSymbol }} Token
         </p>
 
-        <h4>Goal</h4>
-        <p>
-          {{ goal }}
-          <eth-symbol></eth-symbol>
-        </p>
-
         <h4>Min. Contribution</h4>
-        <p>{{ min }}
+        <p>{{ min.toString(10) }}
           <eth-symbol></eth-symbol>
         </p>
 
-        <h4>Start Date</h4>
-        <p>{{ start | moment('from') }}</p>
+        <h4>Max. Contribution</h4>
+        <p>{{ max.toString(10) }}
+          <eth-symbol></eth-symbol>
+        </p>
 
-        <h4>Private Sale Close Date</h4>
-        <p>{{ privateSaleCloseTime | moment('from') }}</p>
 
-        <h4>Pre-ICO Sale Close Date</h4>
-        <p>{{ preSaleCloseTime | moment('from') }}</p>
-
-        <h4>Paused?</h4>
-        <p>{{ paused }}</p>
       </div>
       <div class="col-lg-2">
         &nbsp;
       </div>
       <div class="col-lg-5">
-        <h4>Hard Cap</h4>
-        <p>
-          {{ cap }}
-          <eth-symbol></eth-symbol>
-        </p>
-
-        <h4>Goal Reached</h4>
-        <p>
-          <span v-if="!goalReached">No</span>
-          <span v-if="goalReached">Yes</span>
-          <icon name="check-circle" v-if="goalReached" scale="1" class="text-success" label="Goal met"></icon>
-        </p>
-
-        <h4>Max. Contribution</h4>
-        <p>{{ max }}
-          <eth-symbol></eth-symbol>
-        </p>
+        <h4>Start Date</h4>
+        <p>{{ start | moment('from') }}</p>
 
         <h4>End Date</h4>
         <p>{{ end | moment('from') }}</p>
 
-        <h4>Private Sale Rate</h4>
-        <p>
-          {{ privateSaleRate }}
-          <eth-symbol></eth-symbol>
-          per {{ tokenSymbol }} Token
-        </p>
-
-        <h4>Pre-ICO Sale Rate</h4>
-        <p>
-          {{ preSaleRate }}
-          <eth-symbol></eth-symbol>
-          per {{ tokenSymbol }} Token
-        </p>
+        <h4>Paused?</h4>
+        <p>{{ paused }}</p>
       </div>
     </div>
 
@@ -122,7 +83,6 @@
         'raised',
         'token',
         'cap',
-        'goal',
         'start',
         'end',
         'tokenSymbol',
@@ -131,14 +91,9 @@
         'start',
         'end',
         'owner',
-        'goalReached',
-        'privateSaleCloseTime',
-        'privateSaleRate',
-        'preSaleCloseTime',
-        'preSaleRate',
         'paused'
       ]),
-      ...mapGetters(['icoState'])
+      ...mapGetters([])
     }
   };
 </script>

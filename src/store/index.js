@@ -7,11 +7,10 @@ import * as mutations from './mutation-types';
 import createLogger from 'vuex/dist/logger';
 import { getNetIdString } from '../utils';
 
-// import { PixieCrowdsale, PixieToken } from '../contracts/index';
-import { ConfigurableCrowdsale, ConfigurableToken } from '../contracts/index';
+import { INXCrowdsale, INXToken } from '../contracts/index';
 
-const _token = ConfigurableToken;
-const _crowdsale = ConfigurableCrowdsale;
+const _token = INXToken;
+const _crowdsale = INXCrowdsale;
 
 const utils = require('../utils');
 
@@ -35,8 +34,6 @@ const store = new Vuex.Store({
     // crowdsale
     address: null,
     rate: 0,
-    cap: 0,
-    goal: 0,
     wallet: null,
     start: 0,
     end: 0,
@@ -45,18 +42,12 @@ const store = new Vuex.Store({
     max: 0,
     vault: null,
 
-    // semi-static values
-    privateSaleCloseTime: 0,
-    privateSaleRate: 0,
-    preSaleCloseTime: 0,
-    preSaleRate: 0,
-
     //crowdsale dynamic
     raised: 0,
     crowdsaleBalance: 0,
     contributions: 0,
     paused: null,
-    goalReached: false,
+
     // refund vault
     vaultBalance: 0,
     vaultState: null,
@@ -65,40 +56,12 @@ const store = new Vuex.Store({
   },
   getters: {
     isOwner: (state) => (state.owner && state.account) ? state.owner.toLowerCase() === state.account.toLowerCase() : false,
-    inKycWaitingList: (state) => (state.kycWaitingList) ? state.kycWaitingList.includes(state.account) : false,
-    icoState: (state) => {
-      if (state.start !== 0 && state.end && state.privateSaleCloseTime && state.preSaleCloseTime) {
-        const now = new Date().getTime() / 1000;
-        if (now > state.start && now < state.end) {
-          if (now < state.privateSaleCloseTime) {
-            return 'Private Sale';
-          }
-
-          if (now < state.preSaleCloseTime) {
-            return 'Pre-TGE Sale';
-          }
-
-          return 'TGE Sale';
-        }
-
-        if (now > state.end) {
-          return 'Sale Closed';
-        }
-
-        if (now < state.start) {
-          return 'Sale Not Yet Open';
-        }
-      }
-
-      return '';
-    }
+    inKycWaitingList: (state) => (state.kycWaitingList) ? state.kycWaitingList.includes(state.account) : false
   },
   mutations: {
     [mutations.SET_STATIC_CROWDSALE_DETAILS](state, {
       rate,
       token,
-      cap,
-      goal,
       wallet,
       start,
       end,
@@ -106,16 +69,10 @@ const store = new Vuex.Store({
       owner,
       min,
       max,
-      vault,
-      privateSaleCloseTime,
-      privateSaleRate,
-      preSaleCloseTime,
-      preSaleRate
+      vault
     }) {
       state.rate = rate;
       state.token = token;
-      state.cap = cap;
-      state.goal = goal;
       state.wallet = wallet;
       state.start = start;
       state.end = end;
@@ -124,22 +81,16 @@ const store = new Vuex.Store({
       state.min = min;
       state.max = max;
       state.vault = vault;
-      state.privateSaleCloseTime = privateSaleCloseTime;
-      state.privateSaleRate = privateSaleRate;
-      state.preSaleCloseTime = preSaleCloseTime;
-      state.preSaleRate = preSaleRate;
     },
     [mutations.SET_CROWDSALE_DETAILS](state, {
       raised,
       whitelisted,
       contributions,
-      goalReached,
       paused
     }) {
       state.raised = raised;
       state.whitelisted = whitelisted;
       state.contributions = contributions;
-      state.goalReached = goalReached;
       state.paused = paused;
     },
     [mutations.SET_VAULT_BALANCE](state, vaultBalance) {
@@ -234,8 +185,8 @@ const store = new Vuex.Store({
       })
       .then((results) => {
         commit(mutations.SET_CONTRACT_DETAILS, {
-          tokenBalance: results[0].toNumber(10),
-          crowdsaleBalance: results[1].toNumber(10)
+          tokenBalance: results[0],
+          crowdsaleBalance: results[1]
         });
       });
     },
@@ -245,8 +196,6 @@ const store = new Vuex.Store({
         return Promise.all([
           contract.rate(),
           contract.token(),
-          contract.cap(),
-          contract.goal(),
           contract.wallet(),
           contract.openingTime(),
           contract.closingTime(),
@@ -254,31 +203,21 @@ const store = new Vuex.Store({
           contract.owner(),
           contract.min(),
           contract.max(),
-          contract.vault(),
-          contract.privateSaleCloseTime(),
-          contract.privateSaleRate(),
-          contract.preSaleCloseTime(),
-          contract.preSaleRate()
+          contract.vault()
         ]);
       })
       .then((results) => {
         commit(mutations.SET_STATIC_CROWDSALE_DETAILS, {
-          rate: results[0].toNumber(10),
+          rate: results[0],
           token: results[1].toString(),
-          cap: results[2].toNumber(10),
-          goal: results[3].toNumber(10),
-          wallet: results[4].toString(),
-          start: results[5].toNumber(10),
-          end: results[6].toNumber(10),
-          address: results[7],
-          owner: results[8],
-          min: results[9].toNumber(10),
-          max: results[10].toNumber(10),
-          vault: results[11],
-          privateSaleCloseTime: results[12].toNumber(10),
-          privateSaleRate: results[13].toNumber(10),
-          preSaleCloseTime: results[14].toNumber(10),
-          preSaleRate: results[15].toNumber(10)
+          wallet: results[2].toString(),
+          start: results[3].toNumber(10),
+          end: results[4].toNumber(10),
+          address: results[5],
+          owner: results[6],
+          min: results[7],
+          max: results[8],
+          vault: results[9]
         });
       });
     },
@@ -289,17 +228,15 @@ const store = new Vuex.Store({
           contract.weiRaised(),
           contract.whitelist(account),
           contract.contributions(account, {from: account}),
-          contract.goalReached(),
           contract.paused()
         ]);
       })
       .then((results) => {
         commit(mutations.SET_CROWDSALE_DETAILS, {
-          raised: results[0].toNumber(10),
+          raised: results[0],
           whitelisted: results[1],
-          contributions: results[2].toNumber(10),
-          goalReached: results[3],
-          paused: results[4]
+          contributions: results[2],
+          paused: results[3]
         });
       });
     },
@@ -317,7 +254,7 @@ const store = new Vuex.Store({
       if (state.vault) {
         web3.eth.getBalance(state.vault)
         .then((result) => {
-          commit(mutations.SET_VAULT_BALANCE, result.toString(10));
+          commit(mutations.SET_VAULT_BALANCE, result);
         });
       }
     },

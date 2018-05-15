@@ -19,7 +19,7 @@
         </div>
         <div class="col-lg-4">
           <h4>Supply</h4>
-          <p>{{ tokenTotalSupply }} {{ tokenSymbol }}</p>
+          <p>{{ tokenTotalSupply.toString(10) }} {{ tokenSymbol }}</p>
         </div>
       </div>
 
@@ -32,7 +32,7 @@
         </div>
         <div class="col-lg-4">
           <h4>Crowdsale Balance</h4>
-          <p>{{ crowdsaleBalance }} {{ tokenSymbol }}</p>
+          <p>{{ crowdsaleBalance.toString(10) }} {{ tokenSymbol }}</p>
         </div>
       </div>
 
