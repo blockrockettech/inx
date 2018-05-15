@@ -10,7 +10,7 @@ require('chai')
 
 const RefundVault = artifacts.require('RefundVault');
 
-contract.skip('RefundVault', function ([_, owner, wallet, investor]) {
+contract('RefundVault', function ([_, owner, wallet, investor]) {
   const value = etherToWei(42);
 
   beforeEach(async function () {

@@ -14,7 +14,7 @@ require('chai')
   .use(require('chai-bignumber')(BigNumber))
   .should();
 
-contract.skip('INXToken', function ([_, owner, recipient, anotherAccount, extraAccount]) {
+contract('INXToken', function ([_, owner, recipient, anotherAccount, extraAccount]) {
 
   const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
   const DECIMALS = 18;
