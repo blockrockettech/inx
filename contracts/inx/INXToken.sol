@@ -15,7 +15,7 @@ contract INXToken is StandardToken, Whitelist {
 
   uint256 public constant initialSupply = 28000000 * (10 ** uint256(decimals)); // 25 Million INX to 18 decimal places
 
-  uint256 public constant unlockTime = now.add(31 days);
+  uint256 public constant unlockTime = now.add(30 days);
 
   /**
    * @dev Constructor that gives msg.sender all of existing tokens.

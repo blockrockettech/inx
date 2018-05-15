@@ -32,17 +32,17 @@ contract('INXCrowdsale', function ([owner, investor, wallet, purchaser, authoriz
 
     this.initialSupply = await this.token.initialSupply();
 
-    this.amountAvailableForPurchase = this.initialSupply.times(0.4); // 40% of total supply
+    this.amountAvailableForPurchase = this.initialSupply.times(0.4); // 40% of total supply FIXME
 
     this.openingTime = latestTime() + duration.seconds(60); // opens in 60 seconds
-    this.closingTime = this.openingTime + duration.days(31); // closes in 31 days
+    this.closingTime = this.openingTime + duration.days(30); // closes in 31 days
 
     this.afterClosingTime = this.closingTime + duration.seconds(5);
 
     this.minContribution = etherToWei(0.2); // 0.2 ETH
     this.maxContribution = etherToWei(1000); // 1000 ETH
 
-    this.goal = etherToWei(10000);
+    this.goal = etherToWei(5000);
 
     this.value = this.minContribution;
     this.standardExpectedTokenAmount = this.rate.mul(this.value);
@@ -587,58 +587,31 @@ contract('INXCrowdsale', function ([owner, investor, wallet, purchaser, authoriz
       post.minus(pre).should.be.bignumber.equal(this.minContribution);
     });
 
-    it.skip('should forward funds to wallet after end if goal was reached', async function () {
+    it('should forward funds to wallet after end if goal was reached', async function () {
       await increaseTimeTo(this.openingTime + duration.seconds(5)); // force time to move on to just after opening
 
-      let goalReached = false;
-
       // 1000 ETHER
-      await this.crowdsale.sendTransaction({value: this.maxContribution, from: wallet});
-      goalReached = await this.crowdsale.goalReached();
+      await this.crowdsale.sendTransaction({value: this.maxContribution, from: authorized});
+      let goalReached = await this.crowdsale.goalReached();
       goalReached.should.equal(false);
 
       // 2000 ETHER
-      await this.crowdsale.sendTransaction({value: this.maxContribution, from: purchaser});
-      goalReached = await this.crowdsale.goalReached();
-      goalReached.should.equal(false);
-
-      // 3000 ETHER
-      await this.crowdsale.sendTransaction({value: this.maxContribution, from: authorized});
-      goalReached = await this.crowdsale.goalReached();
-      goalReached.should.equal(false);
-
-      // 4000 ETHER
-      await this.crowdsale.sendTransaction({value: this.maxContribution, from: anotherAuthorized});
-      goalReached = await this.crowdsale.goalReached();
-      goalReached.should.equal(false);
-
-      // 5000 ETHER
       await this.crowdsale.sendTransaction({value: this.maxContribution, from: authorizedTwo});
       goalReached = await this.crowdsale.goalReached();
       goalReached.should.equal(false);
 
-      // 6000 ETHER
+      // 3000 ETHER
       await this.crowdsale.sendTransaction({value: this.maxContribution, from: authorizedThree});
       goalReached = await this.crowdsale.goalReached();
       goalReached.should.equal(false);
 
-      // 7000 ETHER
+      // 4000 ETHER
       await this.crowdsale.sendTransaction({value: this.maxContribution, from: authorizedFour});
       goalReached = await this.crowdsale.goalReached();
       goalReached.should.equal(false);
 
-      // 8000 ETHER
+      // 5000 ETHER -- GOAL REACHED
       await this.crowdsale.sendTransaction({value: this.maxContribution, from: authorizedFive});
-      goalReached = await this.crowdsale.goalReached();
-      goalReached.should.equal(false);
-
-      // 9000 ETHER
-      await this.crowdsale.sendTransaction({value: this.maxContribution, from: investor});
-      goalReached = await this.crowdsale.goalReached();
-      goalReached.should.equal(false);
-
-      // 10000 ETHER -- GOAL REACHED
-      await this.crowdsale.sendTransaction({value: this.maxContribution, from: authorizedFive}); // over allowance FIX
       goalReached = await this.crowdsale.goalReached();
       goalReached.should.equal(true);
 

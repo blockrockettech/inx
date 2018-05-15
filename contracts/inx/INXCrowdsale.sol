@@ -18,9 +18,9 @@ contract INXCrowdsale is Crowdsale, Pausable {
   // FIXME arbitrarily set to one minute until until we know when to open
   uint256 public openingTime = now.add(1 minutes);
 
-  uint256 public closingTime = openingTime.add(31 days);
+  uint256 public closingTime = openingTime.add(30 days);
 
-  uint256 public goal = 10000 ether;
+  uint256 public goal = 5000 ether;
 
   uint256 public min = 0.2 ether;
 
