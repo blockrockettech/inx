@@ -17,7 +17,7 @@ const should = require('chai')
 const INXCrowdsale = artifacts.require('INXCrowdsale');
 const INXToken = artifacts.require('INXToken');
 
-contract('INXCrowdsale', function ([owner, investor, wallet, purchaser, authorized, unauthorized, anotherAuthorized,
+contract.only('INXCrowdsale', function ([owner, investor, wallet, purchaser, authorized, unauthorized, anotherAuthorized,
                                      authorizedTwo, authorizedThree, authorizedFour, authorizedFive]) {
 
   before(async function () {
@@ -34,20 +34,20 @@ contract('INXCrowdsale', function ([owner, investor, wallet, purchaser, authoriz
 
     this.amountAvailableForPurchase = this.initialSupply.times(0.4); // 40% of total supply FIXME
 
-    this.openingTime = latestTime() + duration.seconds(60); // opens in 60 seconds
-    this.closingTime = this.openingTime + duration.days(30); // closes in 31 days
+    // setup INX contract!!
+    this.crowdsale = await INXCrowdsale.new(wallet, this.token.address);
 
+    this.openingTime = (await this.crowdsale.openingTime()).toNumber(10);
+    this.closingTime = (await this.crowdsale.closingTime()).toNumber(10);
     this.afterClosingTime = this.closingTime + duration.seconds(5);
 
-    this.minContribution = etherToWei(0.2); // 0.2 ETH
-    this.maxContribution = etherToWei(1000); // 1000 ETH
+    this.goal = await this.crowdsale.goal();
 
-    this.goal = etherToWei(5000);
+    this.minContribution = await this.crowdsale.min(); // 0.2 ETH
+    this.maxContribution = await this.crowdsale.max(); // 1000 ETH
 
     this.value = this.minContribution;
     this.standardExpectedTokenAmount = this.rate.mul(this.value);
-
-    this.crowdsale = await INXCrowdsale.new(wallet, this.token.address);
 
     // approve so they can invest in crowdsale
     await this.crowdsale.addToWhitelist(owner);
